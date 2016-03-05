@@ -1,5 +1,9 @@
+using Base.Test
+#include("../src/blackscholes.jl")
 using Quant
 
-@test_approx blackscholes_call(.25, 2, 1, 100, 95, .05) 15.047
+@test 15.047 < blackscholes_call(100, 95, .25, .05, 2, 1) < 15.0471
+@test blackscholes_call(100, 95, .25, .05, 2, 1) == blackscholes_call(100, 95, .25, .05, 1)
 
-@test_approx blackscholes_call(.25, 1, 100, 95, .05) blackscholes_call(.25, 2, 1, 100, 95, .05)
+@test 5.413 < blackscholes_put(100, 95, .25, .05, 2, 1) < 5.414
+@test blackscholes_put(100, 95, .25, .05, 2, 1) == blackscholes_put(100, 95, .25, .05, 1)

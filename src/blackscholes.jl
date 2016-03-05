@@ -7,48 +7,26 @@
 using StatsFuns
 
 """
-Calculate the value of $d_1$ in the Black-Scholes Formula
+Calculate the value of \$d_1\$ in the Black-Scholes Formula
 """
-d1 = function(σ, T, t, S, K, r)
-  return (σ .* sqrt(T-t)).^-1 * (log(S ./ K) + (r + σ.^2 / 2).*(T-t))
+function d1(S, K, σ, r, T, t=0)
+  return (log(S./K) + (r + σ.^2/2).*(T-t)) ./ (σ.*sqrt(T-t))
 end
 
-d1 = function(σ, T, S, K, r)
-  return d1(σ, T, 0, S, K, r)
-end
-
-d2 = function(d1_val, σ, T, t)
+function d2(d1_val, σ, T, t=0)
   return d1_val - σ .* sqrt(T-t)
 end
 
-d2 = function(d1_val, σ, T)
-  return d2(d1_val, σ, T, 0)
-end
-
-blackscholes_call = function(σ, T, t, S, K, r)
-  d1_val = d1(σ, T, t, S, K, r)
+function blackscholes_call(S, K, σ, r, T, t=0)
+  d1_val = d1(S, K, σ, r, T, t)
   d2_val = d2(d1_val, σ, T, t)
 
   return normcdf(d1_val) .* S - normcdf(d2_val) .* K .* exp(-r .* (T - t))
 end
 
-blackscholes_call = function(σ, T, S, K, r)
-  d1_val = d1(σ, T, S, K, r)
-  d2_val = d2(d1_val, σ, T)
-
-  return normcdf(d1_val) .* S - normcdf(d2_val) .* K .* exp(-r .* T)
-end
-
-blackscholes_put = function(σ, T, t, S, K, r)
-  d1_val = d1(σ, T, t, S, K, r)
+function blackscholes_put(S, K, σ, r, T, t=0)
+  d1_val = d1(S, K, σ, r, T, t)
   d2_val = d2(d1_val, σ, T, t)
 
-  return normcdf(-d2_val).*K.*exp(-r.*(T-t)) - normcdf(-d1).*S
-end
-
-blackscholes_put = function(σ, T, S, K, r)
-  d1_val = d1(σ, T, S, K, r)
-  d2_val = d2(d1_val, σ, T)
-
-  return normcdf(-d2_val).*K.*exp(-r.*T) - normcdf(-d1).*S
+  return normcdf(-d2_val).*K.*exp(-r.*(T-t)) - normcdf(-d1_val).*S
 end
