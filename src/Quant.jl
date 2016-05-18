@@ -17,6 +17,7 @@ export
   d2,
   blackscholes_call,
   blackscholes_put,
+  BlackScholes,
 end
 
 include("blackscholes.jl")
